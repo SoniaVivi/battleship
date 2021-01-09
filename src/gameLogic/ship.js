@@ -1,8 +1,13 @@
-export const ship = (shipLength, playerName) => {
+export const ship = (shipInitial, shipLength, playerName) => {
   const length = shipLength;
-  const belongsTo = playerName || "none";
+  let belongsTo = () => _belongsTo;
+  const setOwner = (owner) => (_belongsTo = owner);
+
   let _hits = 0;
   let hit = () => (_hits += 1);
+
   const isSunk = () => (_hits === length ? true : false);
-  return { length, belongsTo, hit, isSunk };
+  const initial = shipInitial;
+  let _belongsTo = playerName || "none";
+  return { length, belongsTo, hit, isSunk, initial };
 };

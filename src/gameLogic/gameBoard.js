@@ -1,8 +1,7 @@
 export const gameBoard = () => {
   const getBoard = () => _board;
-  const placeShip = (start, end, ship) => {
+  const placeShip = (start, end, shipInitial) => {
     let [y, x] = start;
-    const shipInitial = _shipInitials[ship];
     _board[y][x] = shipInitial;
 
     while (x !== end[1]) {
@@ -17,7 +16,7 @@ export const gameBoard = () => {
 
   const receiveAttack = (coords) => {
     const [y, x] = coords;
-    const initials = ["M", "X", "0"];
+    const initials = ["X", "0"];
     !initials.includes(_board[y][x])
       ? (_board[y][x] = "X")
       : (_board[y][x] = "M");
@@ -37,14 +36,6 @@ export const gameBoard = () => {
   let _board = Array.from({ length: 10 }, () =>
     Array.from({ length: 10 }, () => "0")
   );
-
-  const _shipInitials = {
-    carrier: "C",
-    battleship: "B",
-    cruiser: "c",
-    submarine: "S",
-    patrol: "P",
-  };
 
   return { getBoard, placeShip, receiveAttack, doShipsRemain };
 };

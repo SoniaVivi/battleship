@@ -1,4 +1,4 @@
-import { gameBoard } from "./gameBoard";
+import { gameBoard } from "../gameBoard";
 
 describe("gameBoard", () => {
   let board = Array.from({ length: 10 }, () =>
@@ -14,7 +14,7 @@ describe("gameBoard", () => {
     board[0][0] = "S";
     board[1][0] = "S";
     board[2][0] = "S";
-    testGameBoard.placeShip([0, 0], [2, 0], "submarine");
+    testGameBoard.placeShip([0, 0], [2, 0], "S");
     expect(testGameBoard.getBoard()).toEqual(board);
   });
 
