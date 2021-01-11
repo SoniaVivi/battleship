@@ -1,67 +1,99 @@
 import { player } from "./player";
-import { ship } from "./ship";
+import { computerPlayer } from "./computerPlayer";
 
-export const game = (firstPlayerName, secondPlayerName, test = false) => {
+export const game = (
+  firstPlayerName,
+  secondPlayerName,
+  useComputerPlayer = true,
+  test = false
+) => {
   let playerOne = player(firstPlayerName);
-  let playerTwo = player(secondPlayerName, playerOne.board);
-  playerOne.setEnemyBoard(playerTwo.board);
+  let playerTwo = player(secondPlayerName);
+  const _isComputerPlayer = useComputerPlayer;
+  let _isPlayerOneTurn = true;
+  let _gameVictor = false;
 
-  const launchAttack = async (coords, attackingPlayer) => {
-    if (!attackingPlayer) {
-      new Promise(() => playerOne.attack(coords))
-        .then(() => playerTwo.board.receiveAttack(coords))
-        .then(console.log("Done!"));
+  const launchAttack = (coords) => {
+    if (_gameVictor) {
+      return;
+    }
+
+    let validMove;
+    if (_isPlayerOneTurn) {
+      validMove = playerTwo.receiveAttack(coords);
     } else {
-      new Promise(() => playerTwo.attack(coords)).then(
-        playerOne.board.receiveAttack(coords)
-      );
+      validMove = playerOne.receiveAttack(coords);
+    }
+    _changeTurn(validMove);
+    _checkVictoryStatus();
+  };
+
+  const getCurrentBoards = () =>
+    _isPlayerOneTurn
+      ? [playerOne.getBoard(), playerTwo.getBoard()]
+      : [playerTwo.getBoard(), playerOne.getBoard()];
+
+  const getVictor = () => (_gameVictor ? _gameVictor : false);
+
+  const getPlayerShips = () =>
+    _isPlayerOneTurn
+      ? [playerOne.getShipStatistics(), playerTwo.getShipStatistics()]
+      : [playerTwo.getShipStatistics(), playerOne.getShipStatistics()];
+
+  const getPlayers = () =>
+    _isPlayerOneTurn
+      ? [playerOne.name, playerTwo.name]
+      : [playerTwo.name, playerOne.name];
+
+  const restart = () => {
+    if (_isComputerPlayer) {
+      computerPlayer.reset();
     }
   };
 
-  const getPlayerOneBoards = () => [
-    playerOne.board,
-    playerOne.getTargetBoard(),
-  ];
+  const _changeTurn = (result) => {
+    if (!result) {
+      return;
+    }
 
-  const getPlayerTwoBoards = () => [
-    playerTwo.board,
-    playerTwo.getTargetBoard(),
-  ];
-
-  const _initialShips = (playerName) => {
-    const fleetData = [
-      ["carrier", "C", 5],
-      ["battleship", "B", 4],
-      ["destroyer", "D", 3],
-      ["submarine", "S", 3],
-      ["patrol boat", "A", 2],
-    ];
-    let fleet = {};
-    fleetData.forEach(
-      (data) => (fleet[data[0]] = ship(data[1], data[2], playerName))
-    );
-    return fleet;
+    if (_isComputerPlayer) {
+      playerOne.receiveAttack(computerPlayer.generateRandomMove());
+    } else {
+      _isPlayerOneTurn = _isPlayerOneTurn === true ? false : true;
+    }
   };
 
-  const _playerOneShips = { ..._initialShips(firstPlayerName) };
-  const _playerTwoShips = { ..._initialShips(secondPlayerName) };
+  const _checkVictoryStatus = () => {
+    if (playerOne.getRemainingShips().length === 0) {
+      _gameVictor = playerTwo.name;
+    } else if (playerTwo.getRemainingShips().length === 0) {
+      _gameVictor = playerOne.name;
+    }
+  };
 
   if (test) {
     let coordinates = [
-      [[0, 0], [5, 0], "C"],
-      [[0, 1], [4, 1], "B"],
-      [[0, 2], [3, 2], "D"],
-      [[0, 3], [3, 3], "S"],
-      [[0, 4], [2, 4], "A"],
+      [[0, 0], [4, 0], "C"],
+      [[0, 1], [3, 1], "B"],
+      [[0, 2], [2, 2], "D"],
+      [[0, 3], [2, 3], "S"],
+      [[0, 4], [1, 4], "A"],
     ];
     for (const data of coordinates) {
       playerOne.board.placeShip(...data);
     }
-    for (const data of coordinates) {
-      playerTwo.board.placeShip(...data);
+    let computerShips = computerPlayer.placeShips();
+    for (const placement of computerShips) {
+      playerTwo.board.placeShip(...placement);
     }
-    launchAttack([0, 0], 0);
   }
 
-  return { launchAttack, getPlayerOneBoards, getPlayerTwoBoards };
+  return {
+    launchAttack,
+    getCurrentBoards,
+    getVictor,
+    getPlayerShips,
+    getPlayers,
+    restart,
+  };
 };

@@ -5,9 +5,10 @@ export const ship = (shipInitial, shipLength, playerName) => {
 
   let _hits = 0;
   let hit = () => (_hits += 1);
+  const getHits = () => _hits;
 
   const isSunk = () => (_hits === length ? true : false);
   const initial = shipInitial;
   let _belongsTo = playerName || "none";
-  return { length, belongsTo, hit, isSunk, initial };
+  return { length, belongsTo, hit, isSunk, initial, getHits };
 };

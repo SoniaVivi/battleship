@@ -1,25 +1,26 @@
 export const gameBoard = () => {
   const getBoard = () => _board;
   const placeShip = (start, end, shipInitial) => {
-    let [y, x] = start;
-    _board[y][x] = shipInitial;
-
-    while (x !== end[1]) {
-      x < end[1] ? (x += 1) : (x -= 1);
-      _board[y][x] = shipInitial;
+    let currentValues = _iterateBoard(start, end, (y, x) => _board[y][x]);
+    if (currentValues.every((val) => val === "0")) {
+      _iterateBoard(start, end, (y, x) => {
+        _board[y][x] = shipInitial;
+      });
+      return true;
     }
-    while (y !== end[0]) {
-      y < end[0] ? (y += 1) : (y -= 1);
-      _board[y][x] = shipInitial;
-    }
+    return null;
   };
 
   const receiveAttack = (coords) => {
     const [y, x] = coords;
-    const initials = ["X", "0"];
-    !initials.includes(_board[y][x])
-      ? (_board[y][x] = "X")
-      : (_board[y][x] = "M");
+    if (_board[y][x] === "X" || _board[y][x] === "M") {
+      return false;
+    }
+    const hitResult = _board[y][x];
+    return [
+      _board[y][x] !== "0" ? (_board[y][x] = "X") : (_board[y][x] = "M"),
+      hitResult,
+    ];
   };
 
   const doShipsRemain = () => {
@@ -37,5 +38,39 @@ export const gameBoard = () => {
     Array.from({ length: 10 }, () => "0")
   );
 
-  return { getBoard, placeShip, receiveAttack, doShipsRemain };
+  const _iterateBoard = (startPoint, endPoint, func) => {
+    let [y, x] = startPoint;
+    let results = [func(y, x)];
+    while ([y, x].join("") !== endPoint.join("")) {
+      if (y !== endPoint[0]) {
+        y < endPoint[0] ? (y += 1) : (y -= 1);
+      }
+      if (x !== endPoint[1]) {
+        x < endPoint[1] ? (x += 1) : (x -= 1);
+      }
+      results.push(func(y, x));
+    }
+    return results;
+  };
+
+  // const obscurePositions = () => {
+  //   const _nonShipInitials = ["X", "0"];
+  //   let tempBoard = [..._board];
+  //   tempBoard.forEach((row, i) => {
+  //     row.forEach((column, y) => {
+  //       if (!_nonShipInitials.includes(column)) {
+  //         tempBoard[i][y] = "0";
+  //       }
+  //     });
+  //   });
+  //   return tempBoard;
+  // };
+
+  return {
+    getBoard,
+    placeShip,
+    receiveAttack,
+    doShipsRemain,
+    // obscurePositions,
+  };
 };

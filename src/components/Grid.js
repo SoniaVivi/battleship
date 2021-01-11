@@ -1,11 +1,11 @@
-import styled from "styled-components";
-
 const Grid = (props) => {
   const getSquareClass = (squareValue) => {
     if (squareValue === "0") {
       return "empty";
     } else if (squareValue === "X") {
       return "hit";
+    } else if (squareValue === "M") {
+      return "miss";
     } else {
       return "ship";
     }
@@ -21,18 +21,31 @@ const Grid = (props) => {
     return scaleElements;
   };
 
+  const obscurePositions = (value) => {
+    if (value === "0") {
+      return "";
+    } else if (!props.isTargetBoard || value === "X" || value === "M") {
+      return value;
+    }
+  };
+
   let topScale = createScale();
   let sideScale = createScale(false).slice(1);
 
   return (
     <div className={props.className ? props.className : "grid"}>
-      <div className="header top">{topScale.map((elem) => elem)}</div>
-      <div className="header side">{sideScale.map((elem) => elem)}</div>
-      {props.grid.map((row) => {
-        return row.map((square) => {
+      <div className="scale top">{topScale.map((elem) => elem)}</div>
+      <div className="scale side">{sideScale.map((elem) => elem)}</div>
+      {props.grid.map((row, y) => {
+        return row.map((square, x) => {
           return (
-            <div className={`square ${getSquareClass(square)}`}>
-              {square === "0" ? "" : square}
+            <div
+              className={`square ${getSquareClass(square)}`}
+              onClick={
+                "attackFunc" in props ? () => props.attackFunc(y, x) : () => {}
+              }
+            >
+              {obscurePositions(square)}
             </div>
           );
         });

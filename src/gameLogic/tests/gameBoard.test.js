@@ -20,19 +20,19 @@ describe("gameBoard", () => {
 
   test("Should be able track attacks and report if all ships have been sunk", () => {
     board[0][1] = "M";
-    testGameBoard.receiveAttack([0, 1]);
+    expect(testGameBoard.receiveAttack([0, 1])[0]).toMatch(/M/);
     expect(testGameBoard.getBoard()).toEqual(board);
     expect(testGameBoard.doShipsRemain()).toBeTruthy();
 
     board[0][0] = "X";
-    testGameBoard.receiveAttack([0, 0]);
+    expect(testGameBoard.receiveAttack([0, 0])[0]).toMatch(/X/);
     expect(testGameBoard.getBoard()).toEqual(board);
     expect(testGameBoard.doShipsRemain()).toBeTruthy();
 
     board[1][0] = "X";
     board[2][0] = "X";
     testGameBoard.receiveAttack([1, 0]);
-    testGameBoard.receiveAttack([2, 0]);
+    expect(testGameBoard.receiveAttack([2, 0])[0]).toMatch(/X/);
     expect(testGameBoard.getBoard()).toEqual(board);
     expect(testGameBoard.doShipsRemain()).toBeFalsy();
   });
