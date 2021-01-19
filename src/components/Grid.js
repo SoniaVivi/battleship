@@ -1,4 +1,8 @@
+import React, { useRef } from "react";
+
 const Grid = (props) => {
+  const shipCoordinates = useRef([]);
+
   const getSquareClass = (squareValue) => {
     if (squareValue === "0") {
       return "empty";
@@ -29,6 +33,17 @@ const Grid = (props) => {
     }
   };
 
+  const placeShip = (e) => {
+    const [y, x] = e.target.dataset.pos
+      .split(",")
+      .map((char) => parseInt(char));
+    shipCoordinates.current.push([y, x]);
+    if (shipCoordinates.current.length !== 1) {
+      props.placeShip(...shipCoordinates.current);
+      shipCoordinates.current = [];
+    }
+  };
+
   let topScale = createScale();
   let sideScale = createScale(false).slice(1);
 
@@ -42,8 +57,9 @@ const Grid = (props) => {
             <div
               className={`square ${getSquareClass(square)}`}
               onClick={
-                "attackFunc" in props ? () => props.attackFunc(y, x) : () => {}
+                "attackFunc" in props ? () => props.attackFunc(y, x) : placeShip
               }
+              data-pos={[y, x]}
             >
               {obscurePositions(square)}
             </div>

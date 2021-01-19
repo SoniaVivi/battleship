@@ -14,7 +14,7 @@ export const game = (
   let _gameVictor = false;
 
   const launchAttack = (coords) => {
-    if (_gameVictor) {
+    if (_gameVictor || !_checkIfShipsPlaced()) {
       return;
     }
 
@@ -51,6 +51,28 @@ export const game = (
     }
   };
 
+  const placeShip = (start, end) => {
+    const player = _isPlayerOneTurn ? "playerOne" : "playerTwo";
+    if (
+      start[0] - end[1] !== 0 &&
+      ((start[1] - end[1]) / (start[0] - end[1])) % 1 !== 0
+    ) {
+      return null;
+    }
+    const length =
+      Math.sqrt((start[0] - end[0]) ** 2 + (start[1] - end[1]) ** 2) + 1;
+    if (!_shipData[player][length]) {
+      return;
+    }
+    const shipInitial = _shipData[player][length].pop();
+    if (!shipInitial) {
+      return null;
+    }
+    _isPlayerOneTurn
+      ? playerOne.board.placeShip(start, end, shipInitial)
+      : playerTwo.board.placeShip(start, end, shipInitial);
+  };
+
   const _changeTurn = (result) => {
     if (!result) {
       return;
@@ -71,6 +93,20 @@ export const game = (
     }
   };
 
+  const _checkIfShipsPlaced = () => {
+    for (const length in _shipData["playerOne"]) {
+      if (_shipData["playerOne"][length].length !== 0) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const _shipData = {
+    playerOne: { 5: ["C"], 4: ["B"], 3: ["D", "S"], 2: ["A"] },
+    playerTwo: { 5: ["C"], 4: ["B"], 3: ["D", "S"], 2: ["A"] },
+  };
+
   if (test) {
     let coordinates = [
       [[0, 0], [4, 0], "C"],
@@ -82,8 +118,10 @@ export const game = (
     for (const data of coordinates) {
       playerOne.board.placeShip(...data);
     }
-    let computerShips = computerPlayer.placeShips();
-    for (const placement of computerShips) {
+  }
+
+  if (_isComputerPlayer) {
+    for (const placement of computerPlayer.placeShips()) {
       playerTwo.board.placeShip(...placement);
     }
   }
@@ -95,5 +133,6 @@ export const game = (
     getPlayerShips,
     getPlayers,
     restart,
+    placeShip,
   };
 };

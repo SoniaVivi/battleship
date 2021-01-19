@@ -4,17 +4,22 @@ import Grid from "./Grid";
 import ShipViewer from "./ShipViewer";
 
 const GameInterface = (props) => {
-  const gameRef = useRef(
-    game(props.playerOneName, props.playerTwoName, true, true)
-  );
+  const gameRef = useRef(game(props.playerOneName, props.playerTwoName));
   const [gameVictor, setGameVictor] = useState(false);
   const [playerName, setPlayerName] = useState(gameRef.current.getPlayers());
   const [playerShips, setPlayerShips] = useState(
     gameRef.current.getPlayerShips
   );
+
   const [boardData, setBoardData] = useState(
     gameRef.current.getCurrentBoards()
   );
+
+  const updatePlayerData = () => {
+    setPlayerShips(gameRef.current.getPlayerShips());
+    setPlayerName(gameRef.current.getPlayers);
+    setBoardData(gameRef.current.getCurrentBoards());
+  };
 
   const attackSquare = (y, x) => {
     const tempData = gameRef.current;
@@ -22,9 +27,7 @@ const GameInterface = (props) => {
     const gameWinner = tempData.getVictor();
     gameRef.current = tempData;
 
-    setPlayerShips(gameRef.current.getPlayerShips());
-    setPlayerName(gameRef.current.getPlayers);
-    setBoardData(gameRef.current.getCurrentBoards());
+    updatePlayerData();
     if (gameWinner !== false) {
       setGameVictor(gameWinner);
     }
@@ -35,10 +38,15 @@ const GameInterface = (props) => {
     tempData.restart();
     gameRef.current = tempData;
 
-    setPlayerShips(gameRef.current.getPlayerShips());
-    setPlayerName(gameRef.current.getPlayers);
-    setBoardData(gameRef.current.getCurrentBoards());
+    updatePlayerData();
     props.restartFunc();
+  };
+
+  const placeShipFunc = (start, end) => {
+    const tempData = gameRef.current;
+    tempData.placeShip(start, end);
+    gameRef.current = tempData;
+    updatePlayerData();
   };
 
   return (
@@ -46,7 +54,7 @@ const GameInterface = (props) => {
       <h1>{playerName[0]}'s Ships</h1>
       <div className="grid-container">
         <ShipViewer fleetData={playerShips[0]}></ShipViewer>
-        <Grid grid={boardData[0]} className="grid" />
+        <Grid grid={boardData[0]} className="grid" placeShip={placeShipFunc} />
       </div>
       <h1>Attack Board</h1>
       <div className="grid-container target-board">
