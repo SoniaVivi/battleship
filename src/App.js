@@ -12,7 +12,9 @@ function App() {
   const changeInfo = () => {
     setGameInfo((prevInfo) => {
       let newInfo = { ...prevInfo };
-      newInfo.startGame = newInfo.startGame === "false" ? "true" : "false";
+      if (newInfo.playerOneName && newInfo.playerTwoName) {
+        newInfo.startGame = newInfo.startGame === "false" ? "true" : "false";
+      }
       return newInfo;
     });
   };
@@ -36,6 +38,14 @@ function App() {
           playerTwoName={gameInfo.playerTwoName}
           restartFunc={changeInfo}
         ></GameInterface>
+        <div className="game-description">
+          <h1>How To Play:</h1>
+          <p>
+            Place Ships by clicking on where you want the ship to start and end
+            in the top-right grid
+          </p>
+          <p>Attack Enemy Ships by clicking on the big center grid</p>
+        </div>
       </div>
     );
   }

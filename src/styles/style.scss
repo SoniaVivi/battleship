@@ -153,3 +153,16 @@ h1:first-child {
 .sunk {
   text-decoration: line-through;
 }
+
+/* Game Description */
+
+div.game-description {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  padding-bottom: 25px;
+
+  h1 {
+    margin: 0;
+  }
+}
