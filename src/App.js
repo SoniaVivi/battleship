@@ -1,51 +1,52 @@
+import React, { useState } from "react";
 import "./styles/style.scss";
 import GameInterface from "./components/GameInterface";
-import React, { useState } from "react";
+import Popup from "./components/Popup";
 
 function App() {
   const [gameInfo, setGameInfo] = useState({
-    playerOneName: "",
+    playerOneName: "Player1",
     playerTwoName: "Computer",
-    startGame: "false",
+    startGame: false,
   });
 
-  const changeInfo = () => {
+  const restartGame = () =>
     setGameInfo((prevInfo) => {
-      let newInfo = { ...prevInfo };
-      if (newInfo.playerOneName && newInfo.playerTwoName) {
-        newInfo.startGame = newInfo.startGame === "false" ? "true" : "false";
-      }
-      return newInfo;
+      return {
+        ...prevInfo,
+        startGame: !prevInfo.startGame,
+      };
     });
-  };
 
-  if (gameInfo.startGame === "false") {
+  if (!gameInfo.startGame) {
     return (
-      <div className="start-game-screen">
-        <label>Please enter username</label>
-        <input
-          type="text"
-          onChange={(e) => (gameInfo.playerOneName = e.target.value)}
-        ></input>
-        <button onClick={changeInfo}>Start!</button>
+      <div className="popup-wrapper">
+        <Popup
+          title="Please enter your username"
+          body={
+            <input
+              type="text"
+              onChange={(e) =>
+                setGameInfo((prevState) => {
+                  return { ...prevState, playerOneName: e.target.value };
+                })
+              }
+            ></input>
+          }
+          className="center"
+          close={restartGame}
+          closeText="Start!"
+        />
       </div>
     );
-  } else if (gameInfo.startGame === "true") {
+  } else {
     return (
-      <div>
+      <div className="col-12 col-l-10">
         <GameInterface
           playerOneName={gameInfo.playerOneName}
           playerTwoName={gameInfo.playerTwoName}
-          restartFunc={changeInfo}
+          restartFunc={restartGame}
         ></GameInterface>
-        <div className="game-description">
-          <h1>How To Play:</h1>
-          <p>
-            Place Ships by clicking on where you want the ship to start and end
-            in the top-right grid
-          </p>
-          <p>Attack Enemy Ships by clicking on the big center grid</p>
-        </div>
       </div>
     );
   }

@@ -6,7 +6,7 @@ const ShipViewer = (props) => {
   const shipName = (name) => name.slice(0, 1).toUpperCase() + name.slice(1);
 
   return (
-    <div>
+    <div className={`${props.className} ship-viewer`}>
       {props.fleetData.map((ship) => (
         <div className="health-bar">
           {ship.length === ship.hits ? (
@@ -16,17 +16,14 @@ const ShipViewer = (props) => {
           )}
           {(() => {
             let healthBar = [];
-            if (props.obscureHits !== "true") {
+            if (!props.obscureHits) {
               for (let i = 0; i < ship.length - ship.hits; i += 1) {
                 healthBar.push(segmentElem);
               }
               for (let i = 0; i < ship.hits; i += 1) {
                 healthBar.push(hitSegmentElem);
               }
-            } else if (
-              props.obscureHits === "true" &&
-              ship.length === ship.hits
-            ) {
+            } else if (props.obscureHits && ship.length === ship.hits) {
               for (let i = 0; i < ship.hits; i += 1) {
                 healthBar.push(hitSegmentElem);
               }

@@ -2,7 +2,7 @@ export const gameBoard = () => {
   const getBoard = () => _board;
   const placeShip = (start, end, shipInitial) => {
     let currentValues = _iterateBoard(start, end, (y, x) => _board[y][x]);
-    if (currentValues.every((val) => val === "0")) {
+    if (currentValues.every((val) => val == "0")) {
       _iterateBoard(start, end, (y, x) => {
         _board[y][x] = shipInitial;
       });
@@ -41,11 +41,11 @@ export const gameBoard = () => {
   const _iterateBoard = (startPoint, endPoint, func) => {
     let [y, x] = startPoint;
     let results = [func(y, x)];
-    while ([y, x].join("") !== endPoint.join("")) {
-      if (y !== endPoint[0]) {
+    while ([y, x].join("") != endPoint.join("")) {
+      if (y != endPoint[0]) {
         y < endPoint[0] ? (y += 1) : (y -= 1);
       }
-      if (x !== endPoint[1]) {
+      if (x != endPoint[1]) {
         x < endPoint[1] ? (x += 1) : (x -= 1);
       }
       results.push(func(y, x));

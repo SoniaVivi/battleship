@@ -1,85 +1,74 @@
+@import "bootstrap";
+
+$min-square-size: 20px;
+$max-square-size: 32px;
 $grid-size: 20vw;
+$gray: #a9a9a9;
+$blue: #0080ff;
 
-* {
-  margin: 0;
-}
+/* General */
 
-h1 {
-  display: inline-block;
-  margin-left: $grid-size * 1.5;
-}
-
-h1:first-child {
-  margin-left: $grid-size / 2.1;
-}
-
-.body {
-  width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-/* Start Game */
-
-.start-game-screen {
+.oval-button {
   display: flex;
-  flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
+  border: 1px solid $gray;
+  border-radius: 50px;
+  height: 28px;
 }
 
-/* Game Menu */
+.modal {
+  display: flex;
+}
 
-.game-menu {
+.modal-content {
+  min-width: 300px;
+}
+
+.popup-wrapper {
   position: absolute;
   top: 0;
-  right: 0;
-  margin: 10px 10px 0 0;
-}
-
-/* Grids */
-
-.grid-container {
-  display: flex;
-  align-items: center;
-}
-
-.grid,
-.target-board {
-  display: grid;
-  grid-template: repeat(11, 1fr) / repeat(11, 1fr);
-  gap: 1px;
-  width: $grid-size;
-  height: $grid-size;
-}
-
-.target-board {
-  $size: ($grid-size * 2);
-  width: $size;
-  height: $size;
-  margin-left: $grid-size / 1.5;
-  margin-right: $grid-size / 3;
-}
-
-.square {
+  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  text-transform: capitalize;
-  font-weight: 700;
-  line-height: 100%;
-  border: 1px solid black;
-  background-color: #0080ff;
+  max-width: 100%;
+  max-height: 100%;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(169, 169, 169, 0.4);
+
+  .modal {
+    position: relative;
+  }
 }
 
-.hit {
-  color: #ff0040;
+button.close {
+  border: unset;
+  background-color: unset;
+  font-size: 20px;
 }
 
-.miss {
-  color: #d3d3d3;
+/* Header */
+
+.nav {
+  $padding: 5px;
+  justify-content: flex-end;
+  padding-top: $padding;
+  padding-bottom: $padding;
+}
+
+.nav-item {
+  width: 72px;
+
+  &.description {
+    margin-left: 5px;
+    width: 120px;
+  }
+}
+
+.nav-link {
+  color: #696969;
 }
 
 /* Grid Scales */
@@ -92,15 +81,88 @@ h1:first-child {
   text-transform: capitalize;
   font-weight: 700;
   text-align: center;
+  user-select: none;
+
+  * {
+    max-height: 20px;
+  }
+
+  &.top {
+    grid-area: 1 / 1 / span 1 / -1;
+    max-height: 20px;
+  }
+
+  &.side {
+    grid-area: 2 / span 1 / -1;
+    flex-flow: column nowrap;
+
+    * {
+      margin-right: 5px;
+    }
+  }
 }
 
-.top {
-  grid-area: 1 / 1 / span 1 / -1;
+/* Grids */
+
+.target-container {
+  justify-content: center;
 }
 
-.side {
-  grid-area: 2 / span 1 / -1;
-  flex-flow: column nowrap;
+.grid,
+.target-board {
+  $min: ($min-square-size + 1) * 10 + 20;
+  $max: ($max-square-size + 1) * 10;
+  display: grid;
+  grid-template: repeat(11, 1fr) / repeat(11, 1fr);
+  gap: 1px;
+  min-width: $min;
+  min-height: $min;
+  max-width: $max;
+  max-height: $max;
+  width: $grid-size;
+  height: $grid-size;
+}
+
+.target-board {
+  $size: ($grid-size * 2);
+  width: $size;
+  height: $size;
+
+  .scale.top {
+    margin-top: 5px;
+  }
+
+  .scale.side {
+    margin-right: 10px;
+  }
+}
+
+.square {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: $max-square-size;
+  max-height: $max-square-size;
+  min-width: $min-square-size;
+  min-height: $min-square-size;
+  text-transform: capitalize;
+  font-weight: 700;
+  line-height: 100%;
+  user-select: none;
+  border: 1px solid black;
+  background-color: $blue;
+
+  &.ship-begin {
+    background-color: adjust-color($blue, $hue: -20deg);
+  }
+}
+
+.hit {
+  color: #ff0040;
+}
+
+.miss {
+  color: #d3d3d3;
 }
 
 /* Victory Screen */
@@ -130,39 +192,48 @@ h1:first-child {
 
 /* Ship overview */
 
+.ship-viewer {
+  min-width: 125px;
+}
+
 .health-bar {
   display: flex;
   align-items: baseline;
 }
 
 .health-segment {
-  width: 5px;
-  height: 5px;
+  $size: 10px;
+  width: $size;
+  height: $size;
   background-color: green;
   border: 1px solid black;
-}
 
-.health-segment:nth-child(2) {
-  margin-left: 5px;
-}
+  &:nth-child(2) {
+    margin-left: 5px;
+  }
 
-.health-segment.hit {
-  background-color: #ff0040;
+  &.hit {
+    background-color: #ff0040;
+  }
 }
 
 .sunk {
   text-decoration: line-through;
 }
 
-/* Game Description */
+.xl-padding {
+  display: none;
+}
 
-div.game-description {
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
-  padding-bottom: 25px;
+@media (min-width: 545px) {
+  .xl-padding {
+    display: flex;
+  }
+}
 
-  h1 {
-    margin: 0;
+@media (min-width: 1660px) {
+  body {
+    max-height: calc(100vh - 32px);
+    padding-bottom: 18px;
   }
 }
