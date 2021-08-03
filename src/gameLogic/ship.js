@@ -10,5 +10,5 @@ export const ship = (shipInitial, shipLength, playerName) => {
   const isSunk = () => (_hits === length ? true : false);
   const initial = shipInitial;
   let _belongsTo = playerName || "none";
-  return { length, belongsTo, hit, isSunk, initial, getHits };
+  return { length, belongsTo, hit, isSunk, initial, getHits, setOwner };
 };

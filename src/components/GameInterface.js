@@ -1,14 +1,15 @@
 import React, { useState, useRef } from "react";
+import PropTypes from "prop-types";
 import { game } from "../gameLogic/game";
 import Grid from "./Grid";
-import DescriptionPopup from "./DescriptionPopup";
 import Popup from "./Popup";
+import GridWrapper from "./GridWrapper";
+import Header from "./Header";
 
 const GameInterface = (props) => {
   const gameRef = useRef(game(props.playerOneName, props.playerTwoName));
   const [gameVictor, setGameVictor] = useState(false);
   const [playerName, setPlayerName] = useState(gameRef.current.getPlayers());
-  const [showDescription, setShowDescription] = useState(false);
   const [playerShips, setPlayerShips] = useState(
     gameRef.current.getPlayerShips
   );
@@ -19,7 +20,7 @@ const GameInterface = (props) => {
 
   const updatePlayerData = () => {
     setPlayerShips(gameRef.current.getPlayerShips());
-    setPlayerName(gameRef.current.getPlayers);
+    setPlayerName(gameRef.current.getPlayers());
     setBoardData(gameRef.current.getCurrentBoards());
   };
 
@@ -53,42 +54,28 @@ const GameInterface = (props) => {
 
   return (
     <React.Fragment>
-      {showDescription ? (
-        <DescriptionPopup close={() => setShowDescription(false)} />
-      ) : (
-        ""
-      )}
-      <ul className="nav nav-pills">
-        <li className="nav-item oval-button">
-          <button className="nav-link" onClick={restartGame}>
-            Restart
-          </button>
-        </li>
-        <li className="nav-item description oval-button">
-          <button
-            className="nav-link "
-            onClick={() => setShowDescription(true)}
-          >
-            How to Play
-          </button>
-        </li>
-      </ul>
-      <Grid
-        grid={boardData[0]}
-        className="col-9"
-        placeShip={placeShipFunc}
+      <Header restart={restartGame} />
+      <GridWrapper
         playerName={playerName[0]}
         fleetData={playerShips[0]}
+        className="col-9"
+        grid={<Grid grid={boardData[0]} placeShip={placeShipFunc} />}
       />
-      <Grid
-        grid={boardData[1]}
-        attackFunc={gameVictor === false ? attackSquare : () => {}}
+      <GridWrapper
         className="target-board col-9"
-        isTargetBoard={true}
         playerName={playerName[1]}
         fleetData={playerShips[1]}
         obscureHits={true}
-      ></Grid>
+        isTargetBoard={true}
+        grid={
+          <Grid
+            grid={boardData[1]}
+            attackFunc={gameVictor === false ? attackSquare : () => {}}
+            isTargetBoard={true}
+          ></Grid>
+        }
+      />
+
       {gameVictor ? (
         <Popup
           title={gameVictor == props.playerOneName ? "Victory!" : "Defeat!"}
@@ -101,5 +88,11 @@ const GameInterface = (props) => {
       )}
     </React.Fragment>
   );
+};
+
+GameInterface.propTypes = {
+  playerOneName: PropTypes.string.isRequired,
+  playerTwoName: PropTypes.string.isRequired,
+  restartFunc: PropTypes.func.isRequired,
 };
 export default GameInterface;

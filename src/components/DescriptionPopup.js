@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import Popup from "./Popup";
 
 const DescriptionPopup = (props) => {
@@ -17,6 +18,10 @@ const DescriptionPopup = (props) => {
       close={props.close}
     />
   );
+};
+
+DescriptionPopup.propTypes = {
+  close: PropTypes.func.isRequired,
 };
 
 export default DescriptionPopup;

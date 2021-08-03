@@ -62,9 +62,10 @@ export const game = (
     if (!shipInitial) {
       return null;
     }
-    _isPlayerOneTurn
+    const wasPlaced = _isPlayerOneTurn
       ? playerOne.board.placeShip(start, end, shipInitial)
       : playerTwo.board.placeShip(start, end, shipInitial);
+    !wasPlaced && _shipData[player][length].push(shipInitial);
   };
 
   const _changeTurn = (result) => {
