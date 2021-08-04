@@ -9,8 +9,13 @@ const GridWrapper = (props) => {
         props.isTargetBoard ? "col-12 target-container" : "col-12 col-xl-6"
       } row`}
     >
-      <div className="col-3"></div>
-      <h1 className="col-9">{props.playerName}&apos;s Ships</h1>
+      <div className="col-12">
+        <h1
+          className={`${props.isTargetBoard ? "col-8" : "col-9"} player-name`}
+        >
+          {props.playerName}&apos;s Ships
+        </h1>
+      </div>
       <div className="w-100"></div>
       <div className="row col-12">
         {props.isTargetBoard ? (

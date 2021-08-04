@@ -26,6 +26,7 @@ function App() {
           body={
             <input
               type="text"
+              className="name-form"
               onChange={(e) =>
                 setGameInfo((prevState) => {
                   return { ...prevState, playerOneName: e.target.value };

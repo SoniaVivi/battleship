@@ -25,6 +25,11 @@ $blue: #0080ff;
   min-width: 300px;
 }
 
+.modal-body {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
 .popup-wrapper {
   position: absolute;
   top: 0;
@@ -47,6 +52,10 @@ button.close {
   border: unset;
   background-color: unset;
   font-size: 20px;
+}
+
+.name-form {
+  margin: 0 auto;
 }
 
 /* Header */
@@ -226,9 +235,26 @@ button.close {
   display: none;
 }
 
+.player-name {
+  margin-left: auto;
+}
+
+.player-name.col-8 {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 90px;
+}
+
 @media (min-width: 545px) {
   .xl-padding {
     display: flex;
+  }
+}
+
+@media (min-width: 1188px) {
+  .player-name.col-8 {
+    padding-left: 60px;
+    margin-right: unset;
   }
 }
 
